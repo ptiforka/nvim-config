@@ -29,6 +29,8 @@ Plug 'wincent/command-t'
 Plug 'thoughtbot/vim-rspec'
 
 Plug 'janko-m/vim-test'
+Plug 'mhartington/oceanic-next'
+
 
 if has('nvim')
     let test#strategy = "neovim"
@@ -95,12 +97,6 @@ autocmd BufWritePre *.erb,*.rb,*.py,*.js :call <SID>StripTrailingWhitespaces()
 " Invoke :Greplace to make your changes across all files. It will ask you interatively y/n/a - you can hit 'a' to do all.
 " Save changes to all files with :wall (write all)
 Plug 'skwp/greplace.vim'
-
-" Color schemes
-"
-" Solarized theme
-Plug 'lifepillar/vim-solarized8'
-
 Plug 'w0rp/ale'
 
 " Vim snippets
@@ -158,6 +154,20 @@ Plug 'jeffkreeftmeijer/vim-numbertoggle'
 Plug 'mileszs/ack.vim'
 
 call plug#end()
+
+" Color sonchemes
+set termguicolors
+
+syntax enable
+let g:oceanic_next_terminal_bold = 1
+let g:oceanic_next_terminal_italic = 1
+
+let g:monokai_term_italic = 1
+let g:monokai_gui_italic = 1
+let g:airline_theme='oceanicnext'
+colorscheme OceanicNext
+
+
 "Go development plugin for Vim
 Plug 'fatih/vim-go'
 " Far.vim makes it easier to find and replace text through multiple files. It's inspired by fancy IDEs, like IntelliJ and Eclipse, that provide cozy tools for such tasks.
@@ -210,8 +220,6 @@ nmap <C-p> :CommandT<CR>
 
 " Exclude files and directories using Vim's wildignore and CtrlP's own g:ctrlp_custom_ignore. If a custom listing command is being used, exclusions are ignored:
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip    " MacOSX/Linux
-set termguicolors
-set wildignore+=*\\tmp\\*,*.swp,*.zip,*.exe  " Windows
 set wildignore+=*/node_modules/*     " Don't search inside Node.js modules
 set wildignore+=*/public/packs     " Don't search inside Node.js modules
 set wildignore+=*/public/packs-test     " Don't search inside Node.js modules

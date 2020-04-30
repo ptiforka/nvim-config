@@ -1,0 +1,46 @@
+call plug#begin('~/.vim/plugged')
+
+Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install()}} " Language Server support
+Plug 'vim-ruby/vim-ruby' " For Facts, Ruby functions, and custom providers
+Plug 'preservim/nerdtree'
+Plug 'vim-airline/vim-airline' 
+Plug 'vim-airline/vim-airline-themes'
+Plug 'Yggdroot/indentLine'
+Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'tpope/vim-rails'
+Plug 'tpope/vim-bundler'
+Plug 'tpope/vim-rake'
+Plug 'thoughtbot/vim-rspec'
+Plug 'vim-utils/vim-ruby-fold'
+Plug 'christoomey/vim-rfactory'
+Plug 'nelstrom/vim-textobj-rubyblock'
+Plug 'mhartington/oceanic-next'
+Plug 'rainglow/vim'
+
+Plugin ‘/usr/local/opt/fzf’
+Plugin ‘junegunn/fzf.vim’
+Plugin ‘Shougo/neocomplete.vim’
+
+Plug 'ayu-theme/ayu-vim
+
+call plug#end()
+
+syntax on
+set termguicolors 
+let ayucolor="light"
+colorscheme ayu
+
+map <C-n> :NERDTreeToggle<CR> “ open/close nerdtree window
+map <C-j> :NERDTreeFind<cr> “ this is the key to jump to the nerdtree window from any other window
+
+map ] :NERDTreeFind<CR> “ pressing this inside any open file in vim will jump to the nerdtree and highlight where that file is -> very useful when you have multiple files open at once
+map <Leader>t :call RunCurrentSpecFile()<CR>
+map <Leader>s :call RunNearestSpec()<CR>
+map <Leader>l :call RunLastSpec()<CR>
+map <Leader>a :call RunAllSpecs()<CR>
+
+set number
+set tabstop=2
+set expandtab 
+
+let g:syntastic_ruby_checkers = ['rubocop', 'mri', 'jruby']
