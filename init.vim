@@ -497,3 +497,5 @@ nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
 " Resume latest coc list
 nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
 " if hidden is not set, TextEdit might fail.
+nnoremap tt  :tabedit<CR>
+nnoremap td  :tabclose<CR>
