@@ -7,8 +7,9 @@ filetype on           " Enable filetype detection
 filetype indent on    " Enable filetype-specific indenting
 filetype plugin on    " Enable filetype-specific plugins
 set scrolloff=4       " Keep at least 4 lines below cursor
+let NERDTreeShowHidden=1
 
-"set clipboard=unnamed " Always copy to system clipboard
+set clipboard=unnamed " Always copy to system clipboard
 call plug#begin('~/.vim/plugged')
 
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
