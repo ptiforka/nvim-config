@@ -12,6 +12,7 @@ let NERDTreeShowHidden=1
 set clipboard=unnamed " Always copy to system clipboard
 call plug#begin('~/.vim/plugged')
 
+
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 Plug 'mhartington/oceanic-next'
@@ -19,7 +20,7 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'Yggdroot/indentLine'
 Plug 'isRuslan/vim-es6'
-Plug 'scrooloose/nerdtree'
+Plug 'preservim/nerdtree'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'tpope/vim-rails'
 Plug 'vim-ruby/vim-ruby'
@@ -29,6 +30,7 @@ Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'wincent/command-t'
 Plug 'thoughtbot/vim-rspec'
 
+Plug 'ngmy/vim-rubocop'
 Plug 'janko-m/vim-test'
 Plug 'mhartington/oceanic-next'
 
@@ -45,6 +47,13 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'tommcdo/vim-exchange'
 Plug 'leafgarland/typescript-vim'
 Plug 'peitalin/vim-jsx-typescript'
+
+" dart + flutter setup
+Plug 'dart-lang/dart-vim-plugin'
+Plug 'thosakwe/vim-flutter'
+Plug 'natebosch/vim-lsc'
+Plug 'natebosch/vim-lsc-dart'
+
 
 " fzf search
 "
@@ -267,6 +276,8 @@ nmap <silent> <leader>l :TestLast<CR>
 nmap <silent> <leader>g :TestVisit<CR>p
 
 nmap <S-Enter> O<Esc>
+
+nnoremap <Leader>d :call CocAction('format') <CR>
 
 " Fix files with prettier, and then ESLint.
 let g:ale_fix_on_save = 1
@@ -498,4 +509,76 @@ nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
 nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
 " if hidden is not set, TextEdit might fail.
 nnoremap tt  :tabedit<CR>
-nnoremap td  :tabclose<CR>
+nnoremap td  :tabclose<CR>c
+
+if exists('g:loaded_vimrubocop') || &cp
+  finish
+endif
+let g:loaded_vimrubocop = 1
+
+let s:save_cpo = &cpo
+set cpo&vim
+
+if !exists('g:vimrubocop_rubocop_cmd')
+  let g:vimrubocop_rubocop_cmd = 'rubocop '
+endif
+
+" Options
+if !exists('g:vimrubocop_config')
+  let g:vimrubocop_config = ''
+endif
+
+if !exists('g:vimrubocop_extra_args')
+  let g:vimrubocop_extra_args = ''
+endif
+
+if !exists('g:vimrubocop_keymap')
+  let g:vimrubocop_keymap = 1
+endif
+
+let s:rubocop_switches = ['-l', '--lint', '-R', '--rails', '-a', '--auto-correct']
+
+function! s:RuboCopSwitches(...)
+  return join(s:rubocop_switches, "\n")
+endfunction
+
+function! s:RuboCop(current_args)
+  let l:extra_args     = g:vimrubocop_extra_args
+  let l:filename       = @%
+  let l:rubocop_cmd    = g:vimrubocop_rubocop_cmd
+  let l:rubocop_opts   = ' '.a:current_args.' '.l:extra_args.' --format emacs'
+  if g:vimrubocop_config != ''
+    let l:rubocop_opts = ' '.l:rubocop_opts.' --config '.g:vimrubocop_config
+  endif
+
+  let l:rubocop_output  = system(l:rubocop_cmd.l:rubocop_opts.' '.l:filename)
+  if !empty(matchstr(l:rubocop_opts, '--auto-correct\|-\<a\>'))
+    "Reload file if using auto correct
+    edit
+  endif
+  let l:rubocop_output  = substitute(l:rubocop_output, '\\"', "'", 'g')
+  let l:rubocop_results = split(l:rubocop_output, "\n")
+  cexpr l:rubocop_results
+  copen
+  " Shortcuts taken from Ack.vim - git://github.com/mileszs/ack.vim.git
+  exec "nnoremap <silent> <buffer> q :ccl<CR>"
+  exec "nnoremap <silent> <buffer> t <C-W><CR><C-W>T"
+  exec "nnoremap <silent> <buffer> T <C-W><CR><C-W>TgT<C-W><C-W>"
+  exec "nnoremap <silent> <buffer> o <CR>"
+  exec "nnoremap <silent> <buffer> go <CR><C-W><C-W>"
+  exec "nnoremap <silent> <buffer> h <C-W><CR><C-W>K"
+  exec "nnoremap <silent> <buffer> H <C-W><CR><C-W>K<C-W>b"
+  exec "nnoremap <silent> <buffer> v <C-W><CR><C-W>H<C-W>b<C-W>J<C-W>t"
+  exec "nnoremap <silent> <buffer> gv <C-W><CR><C-W>H<C-W>b<C-W>J"
+endfunction
+
+command! -complete=custom,s:RuboCopSwitches -nargs=? RuboCop :call <SID>RuboCop(<q-args>)
+
+" Shortcuts for RuboCop
+if g:vimrubocop_keymap == 1
+  nmap <Leader>ru :RuboCop<CR>
+endif
+
+let &cpo = s:save_cpo
+let g:vimrubocop_keymap = 0
+nmap <Leader>r :RuboCop -a<CR>
